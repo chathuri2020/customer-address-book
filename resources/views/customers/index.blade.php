@@ -25,17 +25,24 @@
                                     <td>{{ $customer->email }}</td>
                                     <td>
                                         <!-- View Button -->
-                                        <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info btn-sm">
+                                        <a href="#" class="btn btn-info btn-sm" data-toggle="modal"
+                                            data-target="#showCustomerModal" data-customer-name="{{ $customer->name }}"
+                                            data-company="{{ $customer->company }}"
+                                            data-contact-phone="{{ $customer->contactPhone }}"
+                                            data-email="{{ $customer->email }}" data-country="{{ $customer->country }}"
+                                            data-address-detail="{{ $customer->addressDetail }}">
                                             View
                                         </a>
 
                                         <!-- Edit Button -->
-                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">
+                                        <a href="{{ route('customers.edit', $customer->id) }}"
+                                            class="btn btn-warning btn-sm">
                                             Edit
                                         </a>
 
                                         <!-- Delete Button (Form with POST method for deleting) -->
-                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline-block;">
+                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
+                                            style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm"
@@ -55,7 +62,7 @@
 
     <!-- Add Customer Modal -->
     @include('customers.create')
-
+    @include('customers.show')
     <!-- Bootstrap & jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
