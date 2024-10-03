@@ -45,18 +45,37 @@ class ProjectController extends Controller
     }
 
 
-    public function edit(Project $Project)
+    public function edit(Project $project)
     {
-        return view('projects.edit', compact('Project'));
+        $customers = Customer::with('addresses')->get();
+        return view('projects.edit', compact('project', 'customers'));
     }
 
-    public function update(Request $request, Project $Project)
-    {
-        $Project->update($request->only('name', 'email'));
-        $Project->addresses()->update($request->input('addresses.0'));
+    public function update(Request $request, $id)
+{
+    // Validate the Project data
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string|max:255',
+        'customers' => 'required|array', // Ensure customers are sent as an array
+        'customers.*' => 'exists:customers,id',
+    ]);
 
-        return redirect()->route('projects.index');
-    }
+    // Find the project by its ID
+    $project = Project::findOrFail($id);
+
+    // Update the project with new data
+    $project->update([
+        'name' => $validatedData['name'],
+        'description' => $validatedData['description'],
+    ]);
+
+    // Sync the customers - this will delete existing relationships and attach new ones
+    $project->customers()->sync($validatedData['customers']);
+
+    return redirect()->back()->with('success', 'Project updated and customers updated successfully!');
+}
+
 
     public function destroy(Project $Project)
     {

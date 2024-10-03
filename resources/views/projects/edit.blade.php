@@ -1,38 +1,45 @@
-@extends('layouts.app')
-
-@section('content')
-    <h1>Edit Customer</h1>
-    <form action="{{ route('projects.update', $customer) }}" method="POST">
-        @csrf
-        @method('PUT')
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" name="name" value="{{ $customer->name }}" required>
+<!-- resources/views/edit_customer_modal.blade.php -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1" role="dialog" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCustomerModalLabel">Edit Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!-- Pass the project ID to the route -->
+            <form id="editCustomerForm" action="{{ route('projects.update', $project->id) }}" method="POST">
+                @csrf
+                @method('PUT') <!-- Use PUT method for updating -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">Project Name</label>
+                        <!-- Pre-populate the project name -->
+                        <input type="text" class="form-control" id="name" name="name" value="{{ $project->name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <!-- Pre-populate the description -->
+                        <textarea class="form-control" id="description" name="description" required>{{ $project->description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="customers">Select Customers</label>
+                        <select class="form-control" id="customers" name="customers[]" multiple>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}"
+                                    @if (in_array($customer->id, $project->customers->pluck('id')->toArray())) selected @endif>
+                                    {{ $customer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Project</button>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" name="email" value="{{ $customer->email }}" required>
-        </div>
-        <h5>Address</h5>
-        @foreach ($customer->addresses as $address)
-            <div class="form-group">
-                <label for="address_line_1">Address Line 1</label>
-                <input type="text" class="form-control" name="addresses[0][address_line_1]" value="{{ $address->address_line_1 }}" required>
-            </div>
-            <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" class="form-control" name="addresses[0][city]" value="{{ $address->city }}" required>
-            </div>
-            <div class="form-group">
-                <label for="state">State</label>
-                <input type="text" class="form-control" name="addresses[0][state]" value="{{ $address->state }}" required>
-            </div>
-            <div class="form-group">
-                <label for="zip_code">Zip Code</label>
-                <input type="text" class="form-control" name="addresses[0][zip_code]" value="{{ $address->zip_code }}" required>
-            </div>
-        @endforeach
-        <button type="submit" class="btn btn-primary">Update Customer</button>
-    </form>
-    <a href="{{ route('projects.index') }}" class="btn btn-secondary mt-3">Back to Customers</a>
-@endsection
+    </div>
+</div>

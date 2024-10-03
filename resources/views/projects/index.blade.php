@@ -32,13 +32,13 @@
                                         </ul>
                                     </td>
                                     <td>
-                                        <!-- View Button -->
-                                        <a href="{{ route('projects.show', $project->id) }}" class="btn btn-info btn-sm">
-                                            View
-                                        </a>
+
 
                                         <!-- Edit Button -->
-                                        <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-warning btn-sm">
+                                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal"
+                                            data-target="#editCustomerModal" data-id="{{ $project->id }}"
+                                            data-name="{{ $project->name }}" data-description="{{ $project->description }}"
+                                            data-customers="{{ $project->customers->pluck('id') }}">
                                             Edit
                                         </a>
 
@@ -64,7 +64,7 @@
 
     <!-- Add Customer Modal -->
     @include('projects.create')
-
+    @include('projects.edit')
     <!-- Bootstrap & jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
