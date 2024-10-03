@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Project;
 use App\Models\Customer;
 use Illuminate\Http\Request;
@@ -11,8 +12,8 @@ class ProjectController extends Controller
     public function index()
     {
         $customers = Customer::with('addresses')->get();
-        $projects = Project::all(); // Just fetch all projects
-        return view('projects.index', compact('projects','customers'));
+        $projects = Project::with('customers')->get();// Just fetch all projects
+        return view('projects.index', compact('projects', 'customers'));
     }
 
     public function create()
@@ -27,25 +28,19 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description'      => 'required|string|max:255',
+            'customers' => 'required|array', // Ensure that customers are sent as an array
+            'customers.*' => 'exists:customers,id',
         ]);
 
-        // Create the Project
-        //$Project =
-         Project::create([
-            'name'         => $validatedData['name'],
-            'description'      => $validatedData['description'],
 
+        $project = Project::create([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'],
         ]);
 
-        // Save multiple addresses
-        //foreach ($validatedData['addresses'] as $address) {
-          //  $Project->addresses()->create([
-           //     'country' => $address['country'],
-            //    'address_detail' => $address['addressDetail'],
-            //]);
-        //}
+        // Attach the customers to the project
+        $project->customers()->attach($validatedData['customers']);
 
-        // Redirect back with a success message
         return redirect()->back()->with('success', 'Project and addresses added successfully!');
     }
 

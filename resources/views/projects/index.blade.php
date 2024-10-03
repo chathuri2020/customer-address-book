@@ -14,6 +14,7 @@
                                 <th>ID</th>
                                 <th>Project Name</th>
                                 <th>Description</th>
+                                <th>Customers</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -23,6 +24,13 @@
                                     <td>{{ $project->id }}</td>
                                     <td>{{ $project->name }}</td>
                                     <td>{{ $project->description }}</td>
+                                    <td>
+                                        <ul>
+                                            @foreach ($project->customers as $customer)
+                                                <li>{{ $customer->name }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
                                     <td>
                                         <!-- View Button -->
                                         <a href="{{ route('projects.show', $project->id) }}" class="btn btn-info btn-sm">
@@ -35,7 +43,8 @@
                                         </a>
 
                                         <!-- Delete Button (Form with POST method for deleting) -->
-                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display:inline-block;">
+                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST"
+                                            style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm"
