@@ -17,7 +17,7 @@
                     </div>
                     <div class="form-group">
                         <label for="company">Company</label>
-                        <input type="text" class="form-control" id="company"  name="company" required>
+                        <input type="text" class="form-control" id="company" name="company" required>
                     </div>
                     <div class="form-group">
                         <label for="contactPhone">Contact Phone</label>
@@ -31,10 +31,19 @@
                         <label for="country">Country</label>
                         <input type="text" class="form-control" id="country" name="country" required>
                     </div>
-                    <div class="form-group">
-                        <label for="addressDetail">Address Detail</label>
-                        <input type="text" class="form-control" id="addressDetail" required>
+
+                    <h6>Address Details</h6>
+                    <div id="addressContainer">
+                        <div class="address-group mb-2 d-flex align-items-start">
+                            <input type="text" class="form-control me-2" name="address_line_1[]" required placeholder="Address Line 1">
+                            <input type="text" class="form-control me-2" name="address_line_2[]" placeholder="Address Line 2">
+                            <input type="text" class="form-control me-2" name="city[]" required placeholder="City">
+                            <input type="text" class="form-control me-2" name="state[]" required placeholder="State">
+                            <input type="text" class="form-control me-2" name="zip_code[]" required placeholder="ZIP Code">
+                            <button type="button" class="btn btn-danger remove-address">Remove</button>
+                        </div>
                     </div>
+                    <button type="button" class="btn btn-success" id="addAddress">Add Address</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -44,3 +53,26 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('addAddress').addEventListener('click', function() {
+        const addressContainer = document.getElementById('addressContainer');
+        const addressGroup = document.createElement('div');
+        addressGroup.className = 'address-group mb-2 d-flex align-items-start';
+        addressGroup.innerHTML = `
+            <input type="text" class="form-control me-2" name="address_line_1[]" required placeholder="Address Line 1">
+            <input type="text" class="form-control me-2" name="address_line_2[]" placeholder="Address Line 2">
+            <input type="text" class="form-control me-2" name="city[]" required placeholder="City">
+            <input type="text" class="form-control me-2" name="state[]" required placeholder="State">
+            <input type="text" class="form-control me-2" name="zip_code[]" required placeholder="ZIP Code">
+            <button type="button" class="btn btn-danger remove-address">Remove</button>
+        `;
+        addressContainer.appendChild(addressGroup);
+    });
+
+    document.getElementById('addressContainer').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-address')) {
+            e.target.parentElement.remove();
+        }
+    });
+</script>

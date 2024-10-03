@@ -27,12 +27,17 @@
                     <div class="col-md-8">{{ $customer->email }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4"><strong>Country:</strong></div>
-                    <div class="col-md-8">{{ $customer->country }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4"><strong>Address Detail:</strong></div>
-                    <div class="col-md-8">{{ $customer->address_detail }}</div>
+                    <div class="col-md-4"><strong>Addresses:</strong></div>
+                    <div class="col-md-8">
+                        <ul class="list-unstyled">
+                            @foreach($customer->addresses as $address)
+                                <li>
+                                    {{ $address->address_line_1 }} @if($address->address_line_2), {{ $address->address_line_2 }}@endif,
+                                    {{ $address->city }}, {{ $address->state }} - {{ $address->zip_code }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

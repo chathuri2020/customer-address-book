@@ -29,13 +29,25 @@
                         <div class="col-md-4"><label for="email"><strong>Email:</strong></label></div>
                         <div class="col-md-8"><input type="email" class="form-control" id="email" name="email" value="{{ $customer->email }}" required></div>
                     </div>
+
+                    <!-- Addresses Section -->
                     <div class="row">
-                        <div class="col-md-4"><label for="country"><strong>Country:</strong></label></div>
-                        <div class="col-md-8"><input type="text" class="form-control" id="country" name="country" value="{{ $customer->country }}" required></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4"><label for="addressDetail"><strong>Address Detail:</strong></label></div>
-                        <div class="col-md-8"><input type="text" class="form-control" id="addressDetail" name="addressDetail" value="{{ $customer->address_detail }}" required></div>
+                        <div class="col-md-4"><strong>Addresses:</strong></div>
+                        <div class="col-md-8">
+                            <div id="addressList">
+                                @foreach($customer->addresses as $index => $address)
+                                <div class="address-group mb-2">
+                                    <input type="text" class="form-control mb-1" name="addresses[{{ $index }}][address_line_1]" placeholder="Address Line 1" value="{{ $address->address_line_1 }}" required>
+                                    <input type="text" class="form-control mb-1" name="addresses[{{ $index }}][address_line_2]" placeholder="Address Line 2" value="{{ $address->address_line_2 }}">
+                                    <input type="text" class="form-control mb-1" name="addresses[{{ $index }}][city]" placeholder="City" value="{{ $address->city }}" required>
+                                    <input type="text" class="form-control mb-1" name="addresses[{{ $index }}][state]" placeholder="State" value="{{ $address->state }}" required>
+                                    <input type="text" class="form-control mb-1" name="addresses[{{ $index }}][zip_code]" placeholder="Zip Code" value="{{ $address->zip_code }}" required>
+                                    <button type="button" class="btn btn-danger remove-address">Remove</button>
+                                </div>
+                                @endforeach
+                            </div>
+                            <button type="button" class="btn btn-secondary add-address">Add Address</button>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -46,3 +58,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Script to handle adding and removing address fields
+    document.addEventListener('DOMContentLoaded', function() {
+        let addressIndex = {{ count($customer->addresses) }};
+
+        document.querySelector('.add-address').addEventListener('click', function() {
+            const addressGroup = document.createElement('div');
+            addressGroup.className = 'address-group mb-2';
+            addressGroup.innerHTML = `
+                <input type="text" class="form-control mb-1" name="addresses[${addressIndex}][address_line_1]" placeholder="Address Line 1" required>
+                <input type="text" class="form-control mb-1" name="addresses[${addressIndex}][address_line_2]" placeholder="Address Line 2">
+                <input type="text" class="form-control mb-1" name="addresses[${addressIndex}][city]" placeholder="City" required>
+                <input type="text" class="form-control mb-1" name="addresses[${addressIndex}][state]" placeholder="State" required>
+                <input type="text" class="form-control mb-1" name="addresses[${addressIndex}][zip_code]" placeholder="Zip Code" required>
+                <button type="button" class="btn btn-danger remove-address">Remove</button>
+            `;
+            document.getElementById('addressList').appendChild(addressGroup);
+            addressIndex++;
+        });
+
+        document.getElementById('addressList').addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-address')) {
+                e.target.closest('.address-group').remove();
+            }
+        });
+    });
+</script>
