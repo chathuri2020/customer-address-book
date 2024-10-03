@@ -18,6 +18,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if($customers && $customers->count() > 0)
                             @foreach ($customers as $customer)
                                 <tr>
                                     <td>{{ $customer->id }}</td>
@@ -35,11 +36,14 @@
                                         </a>
 
                                         <!-- Edit Button -->
-                                        <a href="{{ route('customers.edit', $customer->id) }}"
-                                            class="btn btn-warning btn-sm">
+                                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal"
+                                            data-target="#editCustomerModal" data-id="{{ $customer->id }}"
+                                            data-name="{{ $customer->name }}" data-company="{{ $customer->company }}"
+                                            data-contact-phone="{{ $customer->contact_phone }}"
+                                            data-email="{{ $customer->email }}" data-country="{{ $customer->country }}"
+                                            data-address="{{ $customer->address_detail }}">
                                             Edit
                                         </a>
-
                                         <!-- Delete Button (Form with POST method for deleting) -->
                                         <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
                                             style="display:inline-block;">
@@ -53,6 +57,13 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            @include('customers.edit')
+                            @include('customers.show')
+                            @else
+                                <tr>
+                                    <td colspan="5" class="text-center">No Customers available</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -62,7 +73,8 @@
 
     <!-- Add Customer Modal -->
     @include('customers.create')
-    @include('customers.show')
+
+
     <!-- Bootstrap & jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
