@@ -58,13 +58,48 @@ class CustomerController extends Controller
         return view('customers.edit', compact('customer'));
     }
 
-    public function update(Request $request, Customer $customer)
-    {
-        $customer->update($request->only('name', 'email'));
-        $customer->addresses()->update($request->input('addresses.0'));
+    public function update(Request $request, $id)
+{
+    // Validate the customer data
+    $validatedData = $request->validate([
+        'customerName' => 'required|string|max:255',
+        'company'      => 'required|string|max:255',
+        'contactPhone' => 'required|string|max:15',
+        'email'        => 'required|email|max:255',
+        // Uncomment if you are using addresses
+        // 'addresses.*.country' => 'required|string|max:255',
+        // 'addresses.*.addressDetail' => 'required|string|max:500',
+    ]);
 
-        return redirect()->route('customers.index');
-    }
+    // Find the customer by ID
+    $customer = Customer::findOrFail($id);
+
+    // Update the customer details
+    $customer->name = $validatedData['customerName'];
+    $customer->company = $validatedData['company'];
+    $customer->contact_phone = $validatedData['contactPhone'];
+    $customer->email = $validatedData['email'];
+
+    // Save the updated customer
+    $customer->save();
+
+    // Uncomment if you are updating addresses
+    // if (isset($validatedData['addresses'])) {
+    //     foreach ($validatedData['addresses'] as $address) {
+    //         $customer->addresses()->updateOrCreate(
+    //             ['id' => $address['id']], // Assuming you have an ID for the address to update
+    //             [
+    //                 'country' => $address['country'],
+    //                 'address_detail' => $address['addressDetail'],
+    //             ]
+    //         );
+    //     }
+    // }
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Customer updated successfully!');
+}
+
 
     public function destroy(Customer $customer)
     {

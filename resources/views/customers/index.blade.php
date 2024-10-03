@@ -18,6 +18,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if($customers && $customers->count() > 0)
                             @foreach ($customers as $customer)
                                 <tr>
                                     <td>{{ $customer->id }}</td>
@@ -25,17 +26,27 @@
                                     <td>{{ $customer->email }}</td>
                                     <td>
                                         <!-- View Button -->
-                                        <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info btn-sm">
+                                        <a href="#" class="btn btn-info btn-sm" data-toggle="modal"
+                                            data-target="#showCustomerModal" data-customer-name="{{ $customer->name }}"
+                                            data-company="{{ $customer->company }}"
+                                            data-contact-phone="{{ $customer->contactPhone }}"
+                                            data-email="{{ $customer->email }}" data-country="{{ $customer->country }}"
+                                            data-address-detail="{{ $customer->addressDetail }}">
                                             View
                                         </a>
 
                                         <!-- Edit Button -->
-                                        <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">
+                                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal"
+                                            data-target="#editCustomerModal" data-id="{{ $customer->id }}"
+                                            data-name="{{ $customer->name }}" data-company="{{ $customer->company }}"
+                                            data-contact-phone="{{ $customer->contact_phone }}"
+                                            data-email="{{ $customer->email }}" data-country="{{ $customer->country }}"
+                                            data-address="{{ $customer->address_detail }}">
                                             Edit
                                         </a>
-
                                         <!-- Delete Button (Form with POST method for deleting) -->
-                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline-block;">
+                                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
+                                            style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm"
@@ -46,6 +57,13 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            @include('customers.edit')
+                            @include('customers.show')
+                            @else
+                                <tr>
+                                    <td colspan="5" class="text-center">No Customers available</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -55,6 +73,7 @@
 
     <!-- Add Customer Modal -->
     @include('customers.create')
+
 
     <!-- Bootstrap & jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

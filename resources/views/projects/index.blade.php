@@ -19,43 +19,51 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($projects as $project)
+                            @if($projects && $projects->count() > 0)
+                            <!-- Check if $projects is not null and has records -->
+                                @foreach ($projects as $project)
+                                    <tr>
+                                        <td>{{ $project->id }}</td>
+                                        <td>{{ $project->name }}</td>
+                                        <td>{{ $project->description }}</td>
+                                        <td>
+                                            <ul>
+                                                @foreach ($project->customers as $customer)
+                                                    <li>{{ $customer->name }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <!-- Edit Button -->
+                                            <a href="#" class="btn btn-warning btn-sm" data-toggle="modal"
+                                                data-target="#editCustomerModal" data-id="{{ $project->id }}"
+                                                data-name="{{ $project->name }}" data-description="{{ $project->description }}"
+                                                data-customers="{{ $project->customers->pluck('id') }}">
+                                                Edit
+                                            </a>
+
+                                            <!-- Delete Button (Form with POST method for deleting) -->
+                                            <form action="{{ route('projects.destroy', $project->id) }}" method="POST"
+                                                style="display:inline-block;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Are you sure you want to delete this project?');">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                                @include('projects.edit')
+                            @else
                                 <tr>
-                                    <td>{{ $project->id }}</td>
-                                    <td>{{ $project->name }}</td>
-                                    <td>{{ $project->description }}</td>
-                                    <td>
-                                        <ul>
-                                            @foreach ($project->customers as $customer)
-                                                <li>{{ $customer->name }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </td>
-                                    <td>
-
-
-                                        <!-- Edit Button -->
-                                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal"
-                                            data-target="#editCustomerModal" data-id="{{ $project->id }}"
-                                            data-name="{{ $project->name }}" data-description="{{ $project->description }}"
-                                            data-customers="{{ $project->customers->pluck('id') }}">
-                                            Edit
-                                        </a>
-
-                                        <!-- Delete Button (Form with POST method for deleting) -->
-                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST"
-                                            style="display:inline-block;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you sure you want to delete this customer?');">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </td>
+                                    <td colspan="5" class="text-center">No projects available</td>
                                 </tr>
-                            @endforeach
+                            @endif
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -64,7 +72,6 @@
 
     <!-- Add Customer Modal -->
     @include('projects.create')
-    @include('projects.edit')
     <!-- Bootstrap & jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
